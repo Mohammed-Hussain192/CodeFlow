@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP Execution Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .test-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .btn {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>PHP Execution Test</h1>
+    
+    <div class="test-section">
+        <div class="test-title">Test 1: Direct API Call</div>
+        <div id="test1-result">Running test...</div>
+        <button class="btn" id="run-test1">Run Test 1 Again</button>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">Test 2: PHP Executor Class</div>
+        <div id="test2-result">Running test...</div>
+        <button class="btn" id="run-test2">Run Test 2 Again</button>
+    </div>
+    
+    <script src="/js/test-php.js"></script>
+    <script src="/js/php-executor.js"></script>
+    <script>
+        // Test 2: Using the PHP Executor class
+        async function testPHPExecutor() {
+            try {
+                const executor = new PHPExecutor();
+                const testCode = '<?php echo "Hello from PHP Executor test!"; ?>';
+                
+                const result = await executor.executeCode(testCode);
+                console.log("PHP Executor Test Result:", result);
+                
+                const resultDiv = document.getElementById('test2-result');
+                
+                if (result.error) {
+                    resultDiv.innerHTML = `<strong>Error:</strong> ${result.error}`;
+                    resultDiv.style.color = 'red';
+                } else {
+                    resultDiv.innerHTML = `<strong>Success!</strong> Output: ${result.output}`;
+                    resultDiv.style.color = 'green';
+                }
+            } catch (error) {
+                console.error("PHP Executor Test Error:", error);
+                
+                const resultDiv = document.getElementById('test2-result');
+                resultDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                resultDiv.style.color = 'red';
+            }
+        }
+        
+        // Run the executor test when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Run initial tests
+            testPHPExecution();
+            testPHPExecutor();
+            
+            // Add event listeners for the buttons
+            document.getElementById('run-test1').addEventListener('click', testPHPExecution);
+            document.getElementById('run-test2').addEventListener('click', testPHPExecutor);
+        });
+    </script>
+</body>
+</html> 

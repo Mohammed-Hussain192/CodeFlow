@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeFlow - PHP Runner Test</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #777bb3;
+            --secondary-color: #fdcb6e;
+            --success-color: #00b894;
+            --error-color: #ff6b6b;
+            --background-color: #f8f9fa;
+            --text-color: #2d3436;
+            --border-color: #dfe6e9;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .test-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .test-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .test-card h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .test-card h2 i {
+            color: var(--secondary-color);
+        }
+
+        .test-description {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .result {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            min-height: 60px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+
+        .success {
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .error {
+            color: var(--error-color);
+            border-left: 4px solid var(--error-color);
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a4bd1;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-bar {
+            background: white;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .status-indicator.success {
+            background-color: var(--success-color);
+        }
+
+        .status-indicator.error {
+            background-color: var(--error-color);
+        }
+
+        .status-indicator.pending {
+            background-color: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .test-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>CodeFlow PHP Runner</h1>
+            <p>Test your PHP code execution environment</p>
+        </header>
+
+        <div class="test-grid">
+            <div class="test-card">
+                <h2><i class="fas fa-code"></i> Basic Output Test</h2>
+                <p class="test-description">Tests basic PHP echo functionality and output handling</p>
+                <button class="btn btn-primary" id="test1-btn">
+                    <i class="fas fa-play"></i> Run Test
+                </button>
+                <div id="test1-loading" class="loading" style="display: none;">
+                    <i class="fas fa-spinner"></i> Running test...
+                </div>
+                <div id="test1-result" class="result"></div>
+            </div>
+
+            <div class="test-card">
+                <h2><i class="fas fa-exclamation-triangle"></i> Error Handling Test</h2>
+                <p class="test-description">Verifies proper error catching and reporting</p>
+                <button class="btn btn-primary" id="test2-btn">
+                    <i class="fas fa-play"></i> Run Test
+                </button>
+                <div id="test2-loading" class="loading" style="display: none;">
+                    <i class="fas fa-spinner"></i> Running test...
+                </div>
+                <div id="test2-result" class="result"></div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-indicator success"></div>
+                <span>Tests Passed: <span id="passed-count">0</span></span>
+            </div>
+            <div class="status-item">
+                <div class="status-indicator error"></div>
+                <span>Tests Failed: <span id="failed-count">0</span></span>
+            </div>
+            <div class="status-item">
+                <div class="status-indicator pending"></div>
+                <span>Tests Pending: <span id="pending-count">2</span></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/php-runner.js"></script>
+    <script>
+        const phpRunner = new PHPRunner();
+        let passedTests = 0;
+        let failedTests = 0;
+        let pendingTests = 2;
+
+        function updateStatus() {
+            document.getElementById('passed-count').textContent = passedTests;
+            document.getElementById('failed-count').textContent = failedTests;
+            document.getElementById('pending-count').textContent = pendingTests;
+        }
+
+        async function runTest1() {
+            const resultDiv = document.getElementById('test1-result');
+            const loadingDiv = document.getElementById('test1-loading');
+            const button = document.getElementById('test1-btn');
+            
+            button.disabled = true;
+            loadingDiv.style.display = 'inline-flex';
+            resultDiv.textContent = '';
+            resultDiv.className = 'result';
+            
+            try {
+                const code = '<?php echo "Hello from PHP test!"; ?>';
+                const result = await phpRunner.runCode(code);
+                
+                if (result.error) {
+                    resultDiv.innerHTML = `<span class="error">Error: ${result.error}</span>`;
+                    failedTests++;
+                } else {
+                    resultDiv.innerHTML = `<span class="success">Success! Output: ${result.output}</span>`;
+                    passedTests++;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+                failedTests++;
+            } finally {
+                button.disabled = false;
+                loadingDiv.style.display = 'none';
+                pendingTests--;
+                updateStatus();
+            }
+        }
+
+        async function runTest2() {
+            const resultDiv = document.getElementById('test2-result');
+            const loadingDiv = document.getElementById('test2-loading');
+            const button = document.getElementById('test2-btn');
+            
+            button.disabled = true;
+            loadingDiv.style.display = 'inline-flex';
+            resultDiv.textContent = '';
+            resultDiv.className = 'result';
+            
+            try {
+                const code = '<?php $undefined_variable; echo "This should trigger an error"; ?>';
+                const result = await phpRunner.runCode(code);
+                
+                if (result.error) {
+                    resultDiv.innerHTML = `<span class="success">Success! Error caught: ${result.error}</span>`;
+                    passedTests++;
+                } else {
+                    resultDiv.innerHTML = `<span class="error">Expected an error but got: ${result.output}</span>`;
+                    failedTests++;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+                failedTests++;
+            } finally {
+                button.disabled = false;
+                loadingDiv.style.display = 'none';
+                pendingTests--;
+                updateStatus();
+            }
+        }
+
+        document.getElementById('test1-btn').addEventListener('click', runTest1);
+        document.getElementById('test2-btn').addEventListener('click', runTest2);
+    </script>
+</body>
+</html> 

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeFlow - Authentication</title>
+    <style>
+        /* Reset and Base Styles */
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #fdcb6e;
+            --dark-color: #2d3436;
+            --light-color: #f8f9fa;
+            --text-dark: #333;
+            --text-light: #f0f2f5;
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-color);
+            color: var(--text-dark);
+            transition: var(--transition);
+            line-height: 1.6;
+        }
+
+        body.dark {
+            background-color: #121212;
+            color: var(--text-light);
+        }
+
+        /* Navbar */
+        #navbar {
+            background-color: var(--primary-color);
+            color: white;
+            position: sticky;
+            top: 0;
+            padding: 15px 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        body.dark #navbar {
+            background-color: #1e1e1e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--secondary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--secondary-color);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Auth Container */
+        .auth-section {
+            min-height: calc(100vh - 72px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .auth-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            transition: var(--transition);
+        }
+
+        body.dark .auth-container {
+            background-color: #252525;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-title {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        body.dark .auth-title {
+            color: var(--secondary-color);
+        }
+
+        .auth-subtitle {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        body.dark .form-label {
+            color: var(--text-light);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background-color: #f8fafc;
+            color: var(--text-dark);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        body.dark .form-control {
+            background-color: #333;
+            border-color: #444;
+            color: var(--text-light);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+            background-color: white;
+        }
+
+        body.dark .form-control:focus {
+            background-color: #3a3a3a;
+            box-shadow: 0 0 0 3px rgba(253, 203, 110, 0.2);
+        }
+
+        /* Password Toggle Effect */
+        .password-toggle {
+            position: relative;
+        }
+
+        .password-toggle input[type="password"] {
+            letter-spacing: 0.1em;
+        }
+
+        .password-toggle input[type="password"]:hover {
+            letter-spacing: 0;
+        }
+
+        /* Button Styles */
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .auth-btn:hover {
+            background-color: #5a4bd1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+        }
+
+        body.dark .auth-btn {
+            background-color: var(--secondary-color);
+            color: var(--dark-color);
+        }
+
+        body.dark .auth-btn:hover {
+            background-color: #ffb347;
+            box-shadow: 0 4px 12px rgba(253, 203, 110, 0.3);
+        }
+
+        /* Toggle Link */
+        .toggle-link {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .toggle-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 5px;
+        }
+
+        body.dark .toggle-link a {
+            color: var(--secondary-color);
+        }
+
+        .toggle-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Theme Toggle */
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+            margin-left: 20px;
+        }
+
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        body.dark input:checked + .slider {
+            background-color: var(--secondary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+
+        /* Hidden Class */
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .auth-container {
+                padding: 30px;
+            }
+            
+            .auth-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .auth-container {
+                padding: 25px 20px;
+            }
+            
+            .nav-links {
+                gap: 15px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <section id="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">Code<span>Flow</span></a>
+            <div class="nav-links">
+                <a href="/home">Home</a>
+                <a href="/languages">Languages</a>
+                <a href="#testimonials">Notes</a>
+                <a href="/profile">Profile</a>
+                <label class="theme-switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </section>
+
+    <!-- Auth Section -->
+    <section class="auth-section">
+        <div class="auth-container">
+            <!-- Login Form -->
+            <form action="/login/user" method="post" id="loginForm">
+                <div class="auth-header">
+                    <h1 class="auth-title">Welcome back</h1>
+                    <p class="auth-subtitle">Sign in to your CodeFlow account</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginEmail" class="form-label">Email</label>
+                    <input type="email" id="loginEmail" class="form-control" name="email" placeholder="your@email.com" required>
+                </div>
+                
+                <div class="form-group password-toggle">
+                    <label for="loginPassword" class="form-label">Password</label>
+                    <input type="password" id="loginPassword" class="form-control" name="password" 
+                           placeholder="••••••••" 
+                           onmouseover="this.type='text'" 
+                           onmouseout="this.type='password'"
+                           required>
+                </div>
+                  <a href="/forgetpassword" class="toggle-link">Forget Password ?</a>
+                
+                <button type="submit" class="auth-btn">Sign In</button>
+                
+                <div class="toggle-link">
+                    Don't have an account? <a href="#" onclick="toggleForm()">Sign up</a>
+                </div>
+            </form>
+
+            <!-- Register Form -->
+            <form action="/register/user" method="post" id="registerForm" class="hidden">
+                <div class="auth-header">
+                    <h1 class="auth-title">Create account</h1>
+                    <p class="auth-subtitle">Get started with CodeFlow</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regFullName" class="form-label">Full Name</label>
+                    <input type="text" id="regFullName" class="form-control" name="name" placeholder="John Doe" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="regEmail" class="form-label">Email</label>
+                    <input type="email" id="regEmail" class="form-control" name="email" placeholder="your@email.com" required>
+                </div>
+                
+                <div class="form-group password-toggle">
+                    <label for="regPassword" class="form-label">Password</label>
+                    <input type="password" id="regPassword" class="form-control" name="password" 
+                           placeholder="••••••••" 
+                           onmouseover="this.type='text'" 
+                           onmouseout="this.type='password'"
+                           required>
+                </div>
+                
+                <button type="submit" class="auth-btn">Sign Up</button>
+                
+                <div class="toggle-link">
+                    Already have an account? <a href="#" onclick="toggleForm()">Sign in</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        // Theme Toggle Functionality
+        const toggleSwitch = document.getElementById("theme-toggle");
+        
+        function switchTheme(e) {
+            if (e.target.checked) {
+                document.body.classList.add("dark");
+                localStorage.setItem("theme", "dark");
+            } else {
+                document.body.classList.remove("dark");
+                localStorage.setItem("theme", "light");
+            }
+        }
+        
+        toggleSwitch.addEventListener("change", switchTheme);
+        
+        // Check for saved theme preference
+        const currentTheme = localStorage.getItem("theme");
+        if (currentTheme) {
+            if (currentTheme === "dark") {
+                document.body.classList.add("dark");
+                toggleSwitch.checked = true;
+            }
+        }
+
+        // Form Toggle Functionality
+        const loginForm = document.getElementById("loginForm");
+        const registerForm = document.getElementById("registerForm");
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        function toggleForm() {
+            loginForm.classList.toggle("hidden");
+            registerForm.classList.toggle("hidden");
+            
+            // Update active nav link
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.textContent === (loginForm.classList.contains('hidden') ? 'Login' : 'Register')) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Add animation to auth container
+        document.addEventListener('DOMContentLoaded', () => {
+            const authContainer = document.querySelector('.auth-container');
+            authContainer.style.opacity = '0';
+            authContainer.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                authContainer.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                authContainer.style.opacity = '1';
+                authContainer.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

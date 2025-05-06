@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeFlow - Supported Languages</title>
+    <style>
+        /* Reset and Base Styles */
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #fdcb6e;
+            --dark-color: #2d3436;
+            --light-color: #f8f9fa;
+            --text-dark: #333;
+            --text-light: #f0f2f5;
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-color);
+            color: var(--text-dark);
+            transition: var(--transition);
+            line-height: 1.6;
+        }
+
+        body.dark {
+            background-color: #121212;
+            color: var(--text-light);
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 {
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        /* Layout Components */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: var(--primary-color);
+        }
+
+        body.dark .section-title {
+            color: var(--secondary-color);
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--secondary-color);
+            color: var(--dark-color);
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #ffeaa7;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Navbar */
+        #navbar {
+            background-color: var(--primary-color);
+            color: white;
+            position: sticky;
+            top: 0;
+            padding: 15px 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        body.dark #navbar {
+            background-color: #1e1e1e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--secondary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--secondary-color);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Theme Toggle */
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+            margin-left: 20px;
+        }
+
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        body.dark input:checked + .slider {
+            background-color: var(--secondary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+
+        /* Language Grid */
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .language-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        body.dark .language-card {
+            background-color: #252525;
+        }
+
+        .language-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .language-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        body.dark .language-icon {
+            color: var(--secondary-color);
+        }
+
+        .language-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .language-description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        body.dark .language-description {
+            color: #aaa;
+        }
+
+        .language-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        /* Search Bar */
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 50px;
+            border: none;
+            box-shadow: var(--shadow);
+            font-size: 1.1rem;
+            transition: var(--transition);
+            padding-left: 50px;
+        }
+
+        body.dark .search-bar {
+            background-color: #252525;
+            color: white;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+
+        /* Category Filter */
+        .category-filter {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 8px 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        body.dark .category-btn {
+            background-color: #252525;
+            border-color: #444;
+            color: white;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        body.dark .category-btn:hover, 
+        body.dark .category-btn.active {
+            background-color: var(--secondary-color);
+            color: var(--dark-color);
+            border-color: var(--secondary-color);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0 20px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        .copyright {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            .section {
+                padding: 60px 0;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .language-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 576px) {
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .language-card {
+                padding: 20px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <section id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Code<span>Flow</span></a>
+            <div class="nav-links">
+                <a href="/home">Home</a>
+                <a href="/languages" class="active">Languages</a>
+                <a href="/notes">Notes</a>
+                <a href="/profile">Profile</a>
+                <label class="theme-switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </section>
+
+    <!-- Languages Section -->
+    <section id="languages" class="section">
+        <div class="container">
+            <h2 class="section-title">Supported Languages</h2>
+            
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-bar" placeholder="Search for a language...">
+            </div>
+            
+            <div class="language-grid">
+                <!-- Python -->
+                <a href="/python/compailer" class="language-card">
+                    <div class="language-icon"><i class="fab fa-python"></i></div>
+                    <h3 class="language-name">Python</h3>
+                    <p class="language-description">Versatile language for web development, data science, AI, and more.</p>
+                    <div class="language-meta">
+                        <span>Since: 1991</span>
+                        <span>Latest: 3.11</span>
+                    </div>
+                </a>
+                
+                <!-- JavaScript -->
+                <a href="/javascript/compailer" class="language-card">
+                    <div class="language-icon"><i class="fab fa-js"></i></div>
+                    <h3 class="language-name">JavaScript</h3>
+                    <p class="language-description">The language of the web, powering interactive front-end experiences.</p>
+                    <div class="language-meta">
+                        <span>Since: 1995</span>
+                        <span>Latest: ES2022</span>
+                    </div>
+                </a>
+                
+                <!-- Java -->
+                <a href="/java/compailer" class="language-card">
+                    <div class="language-icon"><i class="fab fa-java"></i></div>
+                    <h3 class="language-name">Java</h3>
+                    <p class="language-description">Object-oriented language for enterprise applications and Android.</p>
+                    <div class="language-meta">
+                        <span>Since: 1995</span>
+                        <span>Latest: Java 17</span>
+                    </div>
+                </a>
+                
+                <!-- C++ -->
+                <a href="/Cpp/compailer" class="language-card">
+                    <div class="language-icon"><i class="fas fa-code"></i></div>
+                    <h3 class="language-name">C++</h3>
+                    <p class="language-description">High-performance language for system/software development.</p>
+                    <div class="language-meta">
+                        <span>Since: 1985</span>
+                        <span>Latest: C++20</span>
+                    </div>
+                </a>
+                
+                <!-- C -->
+                <a href="/c/compailer" class="language-card">
+                    <div class="language-icon"><i class="fas fa-copyright"></i></div>
+                    <h3 class="language-name">C</h3>
+                    <p class="language-description">Foundational systems programming language with direct hardware access.</p>
+                    <div class="language-meta">
+                        <span>Since: 1972</span>
+                        <span>Latest: C17</span>
+                    </div>
+                </a>
+                
+                <!-- C# -->
+                <a href="/Csharp/compailer" class="language-card">
+                    <div class="language-icon"><i class="fas fa-copyright"></i></div>
+                    <h3 class="language-name">C#</h3>
+                    <p class="language-description">Modern language for .NET applications and game development.</p>
+                    <div class="language-meta">
+                        <span>Since: 2000</span>
+                        <span>Latest: 10.0</span>
+                    </div>
+                </a>
+                
+                <!-- Swift -->
+                <a href="/swift/compailer" class="language-card">
+                    <div class="language-icon"><i class="fab fa-swift"></i></div>
+                    <h3 class="language-name">Swift</h3>
+                    <p class="language-description">Apple's modern language for iOS, macOS, and beyond.</p>
+                    <div class="language-meta">
+                        <span>Since: 2014</span>
+                        <span>Latest: 5.7</span>
+                    </div>
+                </a>
+                
+                <!-- Go -->
+                <a href="/go/compailer" class="language-card">
+                    <div class="language-icon"><i class="fab fa-golang"></i></div>
+                    <h3 class="language-name">Go</h3>
+                    <p class="language-description">Efficient, statically typed language from Google.</p>
+                    <div class="language-meta">
+                        <span>Since: 2009</span>
+                        <span>Latest: 1.19</span>
+                    </div>
+                </a>
+                
+                <!-- Rust -->
+                <a href="/rust/compailer" class="language-card">
+                    <div class="language-icon"><i class="fab fa-rust"></i></div>
+                    <h3 class="language-name">Rust</h3>
+                    <p class="language-description">Memory-safe systems programming language.</p>
+                    <div class="language-meta">
+                        <span>Since: 2010</span>
+                        <span>Latest: 1.65</span>
+                    </div>
+                </a>
+                
+                <!-- PHP -->
+                <a href="/php/compailer" class="language-card">
+                    <div class="language-icon"><i class="fab fa-php"></i></div>
+                    <h3 class="language-name">PHP</h3>
+                    <p class="language-description">Server-side scripting language for web development.</p>
+                    <div class="language-meta">
+                        <span>Since: 1995</span>
+                        <span>Latest: 8.2</span>
+                    </div>
+                </a>
+                
+                <!-- Ruby -->
+                <a href="/ruby/compailer" class="language-card">
+                    <div class="language-icon"><i class="fas fa-gem"></i></div>
+                    <h3 class="language-name">Ruby</h3>
+                    <p class="language-description">Dynamic, object-oriented language with elegant syntax.</p>
+                    <div class="language-meta">
+                        <span>Since: 1995</span>
+                        <span>Latest: 3.1</span>
+                    </div>
+                </a>
+                
+                <!-- HTML/CSS -->
+                <a href="/html-css/compailer" class="language-card">
+                    <div class="language-icon"><i class="fab fa-html5"></i></div>
+                    <h3 class="language-name">HTML/CSS</h3>
+                    <p class="language-description">Core technologies for building web pages and applications.</p>
+                    <div class="language-meta">
+                        <span>Since: 1993</span>
+                        <span>Latest: HTML5/CSS3</span>
+                    </div>
+                </a>
+                
+                <!-- SQL -->
+                <a href="/sql/compailer" class="language-card">
+                    <div class="language-icon"><i class="fas fa-database"></i></div>
+                    <h3 class="language-name">SQL</h3>
+                    <p class="language-description">Standard language for managing relational databases.</p>
+                    <div class="language-meta">
+                        <span>Since: 1974</span>
+                        <span>Latest: SQL:2023</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="copyright">
+                &copy; 2023 CodeFlow. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle Functionality
+        const toggleSwitch = document.getElementById("theme-toggle");
+        
+        function switchTheme(e) {
+            if (e.target.checked) {
+                document.body.classList.add("dark");
+                localStorage.setItem("theme", "dark");
+            } else {
+                document.body.classList.remove("dark");
+                localStorage.setItem("theme", "light");
+            }
+        }
+        
+        toggleSwitch.addEventListener("change", switchTheme);
+        
+        // Check for saved theme preference
+        const currentTheme = localStorage.getItem("theme");
+        if (currentTheme) {
+            if (currentTheme === "dark") {
+                document.body.classList.add("dark");
+                toggleSwitch.checked = true;
+            }
+        }
+
+        // Category Filter Functionality
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                // Here you would filter the languages based on category
+                // This is just a placeholder for the functionality
+                console.log(`Filtering by: ${btn.textContent}`);
+            });
+        });
+
+        // Search Functionality
+        const searchBar = document.querySelector('.search-bar');
+        searchBar.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const languageCards = document.querySelectorAll('.language-card');
+            
+            languageCards.forEach(card => {
+                const name = card.querySelector('.language-name').textContent.toLowerCase();
+                const description = card.querySelector('.language-description').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // GSAP Animations
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animate language cards on page load
+            gsap.from(".language-card", {
+                opacity: 0,
+                y: 50,
+                stagger: 0.1,
+                duration: 0.8,
+                delay: 0.3,
+                ease: "power3.out"
+            });
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+</body>
+</html>
