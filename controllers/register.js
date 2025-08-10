@@ -9,7 +9,8 @@ async function push(req, res, name, email, password) {
 
         if (finde) {
             console.log("Account already exists, bhai!");
-            return res.redirect("/login"); // Optional: redirect to login
+            req.flash('error_msg', 'Account already exists. Please log in.');
+            return res.redirect("/login"); // redirect to login with flash message
         } else {
             const salt = await bcrypt.genSalt(5);
             const hash = await bcrypt.hash(password, salt);
@@ -22,11 +23,14 @@ async function push(req, res, name, email, password) {
             });
 
             res.cookie("email", user.email);
+            req.flash('success_msg', 'Registration successful! Welcome.');
             return res.redirect("/home");
         }
 
     } catch (err) {
         console.log("Error:", err.message);
+        req.flash('error_msg', 'Registration failed. Please try again.');
+        return res.redirect("/register");
     }
 }
 
