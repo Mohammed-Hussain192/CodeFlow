@@ -10,13 +10,19 @@ const check  = require('./controllers/login')
 const { compilePHP } = require('./controllers/phpCompiler')
 const session = require('express-session');
 const flash = require('connect-flash');
+const MongoStore = require('connect-mongo');
 
 app.use(session({
-  secret: 'FFFFFF', // replace with your own secret
+  secret: 'vvdbxbxbfbgdbfbf',  // replace with a strong secret, e.g. a long random string
   resave: false,
   saveUninitialized: true,
+  store: MongoStore.create({ 
+    mongoUrl: 'mongodb+srv://mohammed-yt:6c!R%25UxN88zLKaQ@baghub.srxjlch.mongodb.net/codeflow',
+    // Optional settings:
+    // collectionName: 'sessions',  // default is 'sessions'
+    // ttl: 14 * 24 * 60 * 60,      // session expiration in seconds (14 days here)
+  }),
 }));
-
 app.use(flash());
 
 // To make flash messages available in all views
