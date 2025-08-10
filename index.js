@@ -110,7 +110,6 @@ app.post("/login/user",async function(req,res){
     let data = {email,password} = req.body
     check(req,res,email,password)
 })
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
