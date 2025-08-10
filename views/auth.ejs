@@ -318,6 +318,35 @@
         .hidden {
             display: none;
         }
+        #flash-messages {
+  position: fixed;
+  top: 120px;
+  right: 20px;
+  width: 300px;
+  z-index: 1000;
+  pointer-events: none; /* So it doesn't block clicks */
+}
+
+.flash {
+  margin-bottom: 10px;
+  padding: 15px 20px;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0; /* start hidden for animation */
+}
+
+.flash-error {
+  background-color: #e74c3c; /* Red */
+}
+
+.flash-success {
+  background-color: #2ecc71; /* Green */
+}
+
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -343,6 +372,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <div id="flash-messages">
+  <% if (error_msg.length > 0) { %>
+    <div class="flash flash-error"><%= error_msg[0] %></div>
+  <% } %>
+  <% if (success_msg.length > 0) { %>
+    <div class="flash flash-success"><%= success_msg[0] %></div>
+  <% } %>
+</div>
+
+
     <!-- Navbar -->
     <section id="navbar">
         <div class="nav-container">
@@ -426,8 +465,32 @@
             </form>
         </div>
     </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+  const flashes = document.querySelectorAll("#flash-messages .flash");
+
+  flashes.forEach((flash) => {
+    // Animate from opacity 0 & y: -20 to visible position
+    gsap.to(flash, { duration: 0.6, opacity: 1, y: 0, ease: "power2.out" });
+
+    // Auto hide after 4 seconds with fade out and slide up
+    setTimeout(() => {
+      gsap.to(flash, { duration: 0.6, opacity: 0, y: -20, ease: "power2.in", onComplete: () => {
+        flash.remove();  // Remove from DOM after animation
+      }});
+    }, 4000);
+
+    // Optional: Allow click to dismiss immediately
+    flash.addEventListener("click", () => {
+      gsap.to(flash, { duration: 0.4, opacity: 0, y: -20, ease: "power2.in", onComplete: () => {
+        flash.remove();
+      }});
+    });
+  });
+});
+
         // Theme Toggle Functionality
         const toggleSwitch = document.getElementById("theme-toggle");
         
