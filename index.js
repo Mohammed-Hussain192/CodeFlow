@@ -5,13 +5,31 @@ const axios = require('axios');
 const auth = require('./middleware/auth')
 const db = require('./config/db')
 const push = require('./controllers/register')
+const app = express();
 const check  = require('./controllers/login')
 const { compilePHP } = require('./controllers/phpCompiler')
+const session = require('express-session');
+const flash = require('connect-flash');
+
+app.use(session({
+  secret: 'FFFFFF', // replace with your own secret
+  resave: false,
+  saveUninitialized: true,
+}));
+
+app.use(flash());
+
+// To make flash messages available in all views
+app.use((req, res, next) => {
+  res.locals.success_msg = req.flash('success_msg');  // for success messages
+  res.locals.error_msg = req.flash('error_msg');      // for error messages
+  next();
+});
 
 
 
 
-const app = express();
+
 app.use(cookieParser());
 app.set('view engine', 'ejs');
 app.use(cookieParser());
@@ -78,7 +96,7 @@ app.get("/register",function(req,res){
     res.render("auth")
 })
 
-app.post("/regsiter/user",async function(req,res){
+app.post("/register/user",async function(req,res){
     let data = {name,email,password} = req.body
     push(req,res,name,email,password)
 })
